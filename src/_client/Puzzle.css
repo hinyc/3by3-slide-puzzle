@@ -1,0 +1,27 @@
+.puzzle {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ccc;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.tile.empty {
+  background-color: #fff;
+  cursor: default;
+}
+
+.solved {
+  grid-column: span 3;
+  text-align: center;
+  font-size: 24px;
+  color: green;
+}
