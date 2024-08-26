@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./Puzzle.css";
 
-const PuzzleAuto4: React.FC = () => {
+const PuzzleAuto3: React.FC = () => {
   const [tiles, setTiles] = useState<number[]>([]);
   const [emptyIndex, setEmptyIndex] = useState<number>(8);
   const [isSolving, setIsSolving] = useState<boolean>(false);
@@ -65,52 +65,76 @@ const PuzzleAuto4: React.FC = () => {
     return true;
   };
 
-  const bfsSolve = (startTiles: number[]) => {
-    const queue: number[][][] = [[[...startTiles]]];
-    const visited = new Set<string>();
-    visited.add(startTiles.join(","));
-
-    while (queue.length > 0) {
-      const path = queue.shift()!;
-      const currentTiles = path[path.length - 1];
-      const emptyIndex = currentTiles.indexOf(8);
-
-      if (isSolved(currentTiles)) {
-        return path;
+  const manhattanDistance = (tiles: number[]) => {
+    let distance = 0;
+    for (let i = 0; i < tiles.length; i++) {
+      if (tiles[i] !== 8) {
+        const targetRow = Math.floor(tiles[i] / 3);
+        const targetCol = tiles[i] % 3;
+        const currentRow = Math.floor(i / 3);
+        const currentCol = i % 3;
+        distance +=
+          Math.abs(targetRow - currentRow) + Math.abs(targetCol - currentCol);
       }
+    }
+    return distance;
+  };
 
-      const possibleMoves = getPossibleMoves(emptyIndex);
-      for (const move of possibleMoves) {
-        const newTiles = [...currentTiles];
-        [newTiles[emptyIndex], newTiles[move]] = [
-          newTiles[move],
-          newTiles[emptyIndex],
-        ];
-        const newTilesKey = newTiles.join(",");
+  const getPossibleMoves = (emptyIndex: number): number[] => {
+    const possibleMoves = [];
+    const row = Math.floor(emptyIndex / 3);
+    const col = emptyIndex % 3;
 
-        if (!visited.has(newTilesKey)) {
-          visited.add(newTilesKey);
-          queue.push([...path, newTiles]);
-        }
+    if (row > 0) possibleMoves.push(emptyIndex - 3); // 위로 이동
+    if (row < 2) possibleMoves.push(emptyIndex + 3); // 아래로 이동
+    if (col > 0) possibleMoves.push(emptyIndex - 1); // 왼쪽으로 이동
+    if (col < 2) possibleMoves.push(emptyIndex + 1); // 오른쪽으로 이동
+
+    return possibleMoves;
+  };
+
+  const findBestMove = (currentTiles: number[], emptyIndex: number) => {
+    const possibleMoves = getPossibleMoves(emptyIndex);
+    let bestMove = null;
+    let bestDistance = Infinity;
+
+    for (const move of possibleMoves) {
+      const newTiles = [...currentTiles];
+      [newTiles[emptyIndex], newTiles[move]] = [
+        newTiles[move],
+        newTiles[emptyIndex],
+      ];
+      const distance = manhattanDistance(newTiles);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestMove = newTiles;
       }
     }
 
-    return [];
+    return bestMove;
   };
 
-  const getPossibleMoves = (emptyIndex: number) => {
-    const moves = [];
-    const row = Math.floor(emptyIndex / 3);
-    const col = emptyIndex % 3;
-    if (row > 0) moves.push(emptyIndex - 3); // Move up
-    if (row < 2) moves.push(emptyIndex + 3); // Move down
-    if (col > 0) moves.push(emptyIndex - 1); // Move left
-    if (col < 2) moves.push(emptyIndex + 1); // Move right
-    return moves;
+  const solvePuzzle = (startTiles: number[]) => {
+    const solutionPath = [];
+    let currentTiles = [...startTiles];
+    let currentEmptyIndex = currentTiles.indexOf(8);
+
+    while (!isSolved(currentTiles)) {
+      const nextMove = findBestMove(currentTiles, currentEmptyIndex);
+      if (nextMove) {
+        solutionPath.push(nextMove);
+        currentTiles = nextMove;
+        currentEmptyIndex = currentTiles.indexOf(8);
+      } else {
+        break;
+      }
+    }
+
+    return solutionPath;
   };
 
   const startSolving = () => {
-    const solutionPath = bfsSolve(tiles);
+    const solutionPath = solvePuzzle(tiles);
     setSolution(solutionPath);
     setIsSolving(true);
   };
@@ -145,4 +169,4 @@ const PuzzleAuto4: React.FC = () => {
   );
 };
 
-export default PuzzleAuto4;
+export default PuzzleAuto3;
