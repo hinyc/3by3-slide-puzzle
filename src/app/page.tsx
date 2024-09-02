@@ -8,11 +8,11 @@ import PuzzleAuto4 from "@/_client/PuzzleAuto3";
 export default function Home() {
   return (
     <main>
-      <Puzzle />
+      {/* <Puzzle /> */}
       {/* <PuzzleAuto /> */}
-      <PuzzleAuto2 />
+      {/* <PuzzleAuto2 /> */}
       <PuzzleAuto3 />
-      <PuzzleAuto4 />
+      {/* <PuzzleAuto4 /> */}
     </main>
   );
 }

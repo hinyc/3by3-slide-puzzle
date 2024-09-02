@@ -3,19 +3,32 @@
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
   gap: 5px;
+  margin: 20px auto;
+  width: max-content;
 }
 
 .tile {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ccc;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 10px;
   font-size: 24px;
+  font-weight: bold;
+  color: #333;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.tile:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
 }
 
 .tile.empty {
   background-color: #fff;
+  border: 2px dashed #ccc;
   cursor: default;
 }
 
@@ -23,5 +36,37 @@
   grid-column: span 3;
   text-align: center;
   font-size: 24px;
-  color: green;
+  color: #4caf50;
+  margin-top: 10px;
+}
+
+.error {
+  text-align: center;
+  font-size: 18px;
+  color: #f44336;
+  margin-top: 10px;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
